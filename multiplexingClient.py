@@ -12,7 +12,10 @@ stuffToSend = ""
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.connect((socket.gethostname(), 50000))
 
-thestring = "thestring"
+
+
+
+thestring = "another string"
 
 try:
     while True:
