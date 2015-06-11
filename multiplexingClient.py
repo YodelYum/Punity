@@ -24,3 +24,4 @@ try:
 
 finally:
         s.close()
+        print "finished"
