@@ -40,7 +40,7 @@ def addPlayer(playerName): #adds player to players-list and checks/Assigns for m
 
 while True:  # main loop
 
-    time.sleep(0.1)
+    time.sleep(0.05)
     try:
         lesen, schreiben, oob = select.select([server] + clients, [], [], 0.0)
     except Exception, e:
@@ -51,32 +51,29 @@ while True:  # main loop
             client, addr = server.accept()
             clients.append(client)
             print "Client verbunden"
-            # registerPlayer(str(addr))
-            client.send("hi")
+
+
 
         else:
             try:  # receive data from client
                 nachricht = sock.recv(1024).decode('utf-8')
-                nachricht = str(nachricht)
 
-                addPlayer(nachricht.split('_')[0])
+                print "msg: "+nachricht
+                nachricht = str(nachricht)
+                stuffToSend += nachricht
+                #addPlayer(nachricht.split('/')[0])
             except:
                 print "Player Connection lost"
                 clients.remove(sock)
-                # definePlayerName(str(sock.getpeername()), nachricht.split('_')[0])
 
-                # if nachricht:
-                #   stuffToSend += nachricht
-                # else:
-                #   print "Socket beendet"
-                #  sock.close()
-                # clients.remove(sock)
 
     for client in clients:  # sends availabel data in stufftosend to all clients
         try:
+            print stuffToSend
             client.send(stuffToSend)
         except:
             print "player connection lost"
             clients.remove(client)
 
-    stuffToSend = "."
+    stuffToSend = " "
+
