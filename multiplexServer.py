@@ -1,4 +1,5 @@
-__author__ = 'Alex'
+__author__ = 'Alexander Gattinger'
+#version 0.1
 
 import socket
 import select
@@ -27,15 +28,15 @@ def addPlayer(playerName): #adds player to players-list and checks/Assigns for m
             return True
 
     players.append(playerName)
-    masterClientDefined = False
+
+    masterClientDefined = False #define masterclient
     for player in players:
         if player[-6:] == "master":
             masterClientDefined = True
-
     if masterClientDefined is False:
         players[0] = players[0] + "_master"
 
-    print players
+
 
 
 while True:  # main loop
@@ -52,8 +53,6 @@ while True:  # main loop
             clients.append(client)
             print "Client verbunden"
 
-
-
         else:
             try:  # receive data from client
                 nachricht = sock.recv(1024).decode('utf-8')
@@ -66,7 +65,6 @@ while True:  # main loop
                 print "Player Connection lost"
                 clients.remove(sock)
 
-
     for client in clients:  # sends availabel data in stufftosend to all clients
         try:
             print stuffToSend
@@ -75,5 +73,5 @@ while True:  # main loop
             print "player connection lost"
             clients.remove(client)
 
-    stuffToSend = " "
+    stuffToSend = " " #empty stuffToSend and set to " ". " " is necessary because unity seems to freeze if nothing is sent.
 
