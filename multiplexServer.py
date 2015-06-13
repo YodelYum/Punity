@@ -19,49 +19,64 @@ clients = []
 players = []
 
 
-#Functions
+# Functions
 
-def registerPlayer(ip): #called when new client connects, adds players IP to players-array
-    players.append(ip)
-    #if len(players) is 1:
-        #players[0] = players[0] + "_master"
+def addPlayer(playerName): #adds player to players-list and checks/Assigns for master-client if affordable
+    for player in players:
+        if player == playerName:
+            return True
 
-    players
+    players.append(playerName)
+    masterClientDefined = False
+    for player in players:
+        if player[-6:] == "master":
+            masterClientDefined = True
 
-def definePlayerName(ip, playerName): #checks if there are still IPs in clients[] and checks for names
+    if masterClientDefined is False:
+        players[0] = players[0] + "_master"
+
+    print players
+
+
+while True:  # main loop
+
+    time.sleep(0.1)
     try:
-        theIndex = clients.index(str(ip))
-        clients[theIndex] = str(playerName)
-    except:
-        clients.append(str(playerName))
+        lesen, schreiben, oob = select.select([server] + clients, [], [], 0.0)
+    except Exception, e:
+        print str(e)
 
-try:
-    while True: #main loop
+    for sock in lesen:
+        if sock is server:
+            client, addr = server.accept()
+            clients.append(client)
+            print "Client verbunden"
+            # registerPlayer(str(addr))
+            client.send("hi")
 
-        time.sleep((1/ticker))
-        lesen, schreiben, oob = select.select([server] + clients, [], [],0)
-
-        for sock in lesen:
-            if sock is server:
-                client, addr = server.accept()
-                clients.append(client)
-                registerPlayer(str(addr))
-                print "Client verbunden"
-            else:
+        else:
+            try:  # receive data from client
                 nachricht = sock.recv(1024).decode('utf-8')
                 nachricht = str(nachricht)
-                definePlayerName(sock.getpeername(),nachricht.split('_')[0])
-                if nachricht:
-                    stuffToSend += nachricht
-                else:
-                    print "Socket beendet"
-                    sock.close()
-                    clients.remove(sock)
-        print stuffToSend
-        stuffToSend = ""
-                    # send data
 
-finally:
-    for c in clients:
-        c.close()
-    server.close()
+                addPlayer(nachricht.split('_')[0])
+            except:
+                print "Player Connection lost"
+                clients.remove(sock)
+                # definePlayerName(str(sock.getpeername()), nachricht.split('_')[0])
+
+                # if nachricht:
+                #   stuffToSend += nachricht
+                # else:
+                #   print "Socket beendet"
+                #  sock.close()
+                # clients.remove(sock)
+
+    for client in clients:  # sends availabel data in stufftosend to all clients
+        try:
+            client.send(stuffToSend)
+        except:
+            print "player connection lost"
+            clients.remove(client)
+
+    stuffToSend = "."
