@@ -60,7 +60,6 @@ while True:  # main loop
                 print "msg: "+nachricht
                 nachricht = str(nachricht)
                 stuffToSend += nachricht
-                #addPlayer(nachricht.split('/')[0])
             except:
                 print "Player Connection lost"
                 clients.remove(sock)
