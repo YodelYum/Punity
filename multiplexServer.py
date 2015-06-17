@@ -34,13 +34,12 @@ def addPlayer(playerName): #adds player to players-list and checks/Assigns for m
         if player[-6:] == "master":
             masterClientDefined = True
     if masterClientDefined is False:
-        players[0] = players[0] + "_master"
+        players[0] = players[0] + "=master"
 
 
 
 
 while True:  # main loop
-
     time.sleep(0.05)
     try:
         lesen, schreiben, oob = select.select([server] + clients, [], [], 0.0)
@@ -52,7 +51,6 @@ while True:  # main loop
             client, addr = server.accept()
             clients.append(client)
             print "Client verbunden"
-
         else:
             try:  # receive data from client
                 nachricht = sock.recv(1024).decode('utf-8')
@@ -66,6 +64,11 @@ while True:  # main loop
 
     for client in clients:  # sends availabel data in stufftosend to all clients
         try:
+            stuffToSend += "players_" #adds player-array to stream
+            for p in players:
+                stuffToSend += p+"+"
+            stuffToSend = stuffToSend[:-1]
+
             print stuffToSend
             client.send(stuffToSend)
         except:
