@@ -53,11 +53,11 @@ while True:  # main loop
             print "Client verbunden"
         else:
             try:  # receive data from client
-                nachricht = sock.recv(1024).decode('utf-8')
+                msg = sock.recv(1024).decode('utf-8')
 
-                print "msg: "+nachricht
-                nachricht = str(nachricht)
-                stuffToSend += nachricht
+                print "msg: "+msg
+                msg = str(msg)
+                stuffToSend += msg
             except:
                 print "Player Connection lost"
                 clients.remove(sock)
